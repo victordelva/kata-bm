@@ -6,6 +6,8 @@
         <v-data-table
             :headers="headers"
             :items="myRequests"
+            sort-by="time"
+            sort-asc
         >
             <template v-slot:item.action="{ item }">
                 <v-btn @click="seeStatus(item.id)">Ver status</v-btn>
