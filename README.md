@@ -15,3 +15,6 @@ Debes tener Docker y Docker compose disponible en tu ordenador
 
 Tendrás disponible la aplicación en tu localhost
 
+## Execute tests
+
+> `docker-compose exec app ./vendor/bin/phpunit`
