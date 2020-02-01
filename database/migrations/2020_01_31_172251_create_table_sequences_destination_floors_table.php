@@ -18,8 +18,8 @@ class CreateTableSequencesDestinationFloorsTable extends Migration
             $table->unsignedBigInteger('sequence_id');
             $table->unsignedBigInteger('floor_id');
 
-            $table->foreign('floor_id')->references('id')->on('floors');
-            $table->foreign('sequence_id')->references('id')->on('sequence_elevator_requests');
+            $table->foreign('floor_id')->references('id')->on('floors')->onDelete('cascade');
+            $table->foreign('sequence_id')->references('id')->on('sequence_elevator_requests')->onDelete('cascade');
 
         });
     }

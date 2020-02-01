@@ -20,4 +20,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::put('/sequences/all/transform', 'ElevatorRequestController@transformSequences');
 Route::get('/requests', 'ElevatorRequestController@getAll');
 Route::put('/elevators/all/turn-on', 'ElevatorController@turnOn');
+Route::get('/elevators/{id}/status', 'ElevatorRequestController@getStatus');
 Route::get('/floors', 'FloorsController@getAll');

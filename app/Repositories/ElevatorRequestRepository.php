@@ -31,4 +31,11 @@ class ElevatorRequestRepository implements ElevatorRequestRepositoryContract
             ->where('id', $id)
             ->update($data);
     }
+
+    public function getStatus($id)
+    {
+        return DB::table('elevator_statuses')
+            ->where('request_id', $id)
+            ->get();
+    }
 }

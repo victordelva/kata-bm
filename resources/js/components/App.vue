@@ -2,15 +2,16 @@
     <div class="container">
         <v-btn v-if="!requests[0] && !chargeActivated" @click="charge">Cargar Request</v-btn>
         <v-btn @click="inform">Generar Informe</v-btn>
+
         <v-data-table
-            :loading="!myRequests[0] && (chargeActivated || informActivated)"
             :headers="headers"
             :items="myRequests"
-            item-key="id"
-            sort-by="time"
-            sort-asc
-            class="elevation-1"
-        ></v-data-table>
+        >
+            <template v-slot:item.action="{ item }">
+                <v-btn @click="seeStatus(item.id)">Ver status</v-btn>
+            </template>
+        </v-data-table>
+
         <v-snackbar
             v-model="snackbar"
             top
@@ -24,6 +25,24 @@
                 Close
             </v-btn>
         </v-snackbar>
+        <v-card
+            class="mx-auto"
+            color="#26c6da"
+            dark
+            max-width="400"
+            v-if="dialog"
+        >
+            <v-card-title>
+                <span class="title font-weight-light">Status Seleccionado</span>
+            </v-card-title>
+
+            <v-card-text class="headline font-weight-bold">
+                <template v-for="status in dialog">
+                    <h2>Ascensor {{status.elevator_id}}: </h2>
+                    <h3>{{findFloor(status.floor_id).name}}</h3>
+                </template>
+            </v-card-text>
+        </v-card>
     </div>
 </template>
 
@@ -38,11 +57,15 @@
             myRequests: function () {
                 let self = this;
                 return Object.values(this.requests).map(function (item) {
-                    item.from_floor_id = self.getFloor(item.from_floor_id).name;
-                    item.to_floor_ids = self.getFloor(item.to_floor_ids).name;
+                    item.from_floor_id = self.findFloor(item.from_floor_id).name;
+                    item.to_floor_ids = self.findFloor(item.to_floor_ids).name;
                     return item;
                 });
             },
+
+            ...mapGetters([
+                'findFloor'
+            ]),
         },
         data () {
             return {
@@ -57,10 +80,12 @@
                     { text: 'Ascensor', value: 'elevator_id' },
                     { text: 'Plantas recorridas en la petición', value: 'floors_on_request' },
                     { text: 'Plantas recorridas hasta la llegada', value: 'floors_on_movement' },
+                    { text: 'Actions', value: 'action', sortable: false }
                 ],
                 chargeActivated: false,
                 informActivated: false,
                 snackbar: false,
+                dialog: null,
             }
         },
         mounted() {
@@ -69,14 +94,12 @@
             this.fetchFloors();
         },
         methods: {
-            ...mapGetters([
-                'findFloor'
-            ]),
             ...mapActions([
                 'fetchRequests',
                 'fetchFloors',
                 'transform',
                 'turnOn',
+                'getStatus',
             ]),
             ...mapMutations({
                 'mutateRequests': 'requests',
@@ -98,8 +121,13 @@
                     self.fetchRequests();
                 });
             },
-            getFloor(id) {
-                return this.findFloor()(id);
+            seeStatus(id) {
+                let self = this;
+                this.snackbar = true;
+                self.dialog = null;
+                this.getStatus(id).then(function(data) {
+                    self.dialog = data;
+                });
             }
         },
     }

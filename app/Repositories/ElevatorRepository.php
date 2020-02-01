@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Domain\Elevator;
 use App\Domain\ElevatorRequest;
+use App\Domain\ElevatorStatus;
 use Illuminate\Support\Facades\DB;
 
 class ElevatorRepository implements ElevatorRepositoryContract
@@ -23,6 +24,16 @@ class ElevatorRepository implements ElevatorRepositoryContract
         return DB::table('elevators')
             ->where('id', $id)
             ->update($data);
+    }
+
+    public function all()
+    {
+        return Elevator::all();
+    }
+
+    public function saveStatus(array $params)
+    {
+        return (new ElevatorStatus($params))->save();
     }
 
 }

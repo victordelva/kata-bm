@@ -1944,18 +1944,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['requests']), {
     myRequests: function myRequests() {
       var self = this;
       return Object.values(this.requests).map(function (item) {
-        item.from_floor_id = self.getFloor(item.from_floor_id).name;
-        item.to_floor_ids = self.getFloor(item.to_floor_ids).name;
+        item.from_floor_id = self.findFloor(item.from_floor_id).name;
+        item.to_floor_ids = self.findFloor(item.to_floor_ids).name;
         return item;
       });
     }
-  }),
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['findFloor'])),
   data: function data() {
     return {
       headers: [{
@@ -1977,10 +1996,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         text: 'Plantas recorridas hasta la llegada',
         value: 'floors_on_movement'
+      }, {
+        text: 'Actions',
+        value: 'action',
+        sortable: false
       }],
       chargeActivated: false,
       informActivated: false,
-      snackbar: false
+      snackbar: false,
+      dialog: null
     };
   },
   mounted: function mounted() {
@@ -1988,7 +2012,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.fetchRequests();
     this.fetchFloors();
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(['findFloor']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['fetchRequests', 'fetchFloors', 'transform', 'turnOn']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])({
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['fetchRequests', 'fetchFloors', 'transform', 'turnOn', 'getStatus']), {}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])({
     'mutateRequests': 'requests'
   }), {
     charge: function charge() {
@@ -2008,8 +2032,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         self.fetchRequests();
       });
     },
-    getFloor: function getFloor(id) {
-      return this.findFloor()(id);
+    seeStatus: function seeStatus(id) {
+      var self = this;
+      this.snackbar = true;
+      self.dialog = null;
+      this.getStatus(id).then(function (data) {
+        self.dialog = data;
+      });
     }
   })
 });
@@ -38012,16 +38041,28 @@ var render = function() {
       _c("v-btn", { on: { click: _vm.inform } }, [_vm._v("Generar Informe")]),
       _vm._v(" "),
       _c("v-data-table", {
-        staticClass: "elevation-1",
-        attrs: {
-          loading:
-            !_vm.myRequests[0] && (_vm.chargeActivated || _vm.informActivated),
-          headers: _vm.headers,
-          items: _vm.myRequests,
-          "item-key": "id",
-          "sort-by": "time",
-          "sort-asc": ""
-        }
+        attrs: { headers: _vm.headers, items: _vm.myRequests },
+        scopedSlots: _vm._u([
+          {
+            key: "item.action",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                _c(
+                  "v-btn",
+                  {
+                    on: {
+                      click: function($event) {
+                        return _vm.seeStatus(item.id)
+                      }
+                    }
+                  },
+                  [_vm._v("Ver status")]
+                )
+              ]
+            }
+          }
+        ])
       }),
       _vm._v(" "),
       _c(
@@ -38052,7 +38093,44 @@ var render = function() {
           )
         ],
         1
-      )
+      ),
+      _vm._v(" "),
+      _vm.dialog
+        ? _c(
+            "v-card",
+            {
+              staticClass: "mx-auto",
+              attrs: { color: "#26c6da", dark: "", "max-width": "400" }
+            },
+            [
+              _c("v-card-title", [
+                _c("span", { staticClass: "title font-weight-light" }, [
+                  _vm._v("Status Seleccionado")
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-card-text",
+                { staticClass: "headline font-weight-bold" },
+                [
+                  _vm._l(_vm.dialog, function(status) {
+                    return [
+                      _c("h2", [
+                        _vm._v("Ascensor " + _vm._s(status.elevator_id) + ": ")
+                      ]),
+                      _vm._v(" "),
+                      _c("h3", [
+                        _vm._v(_vm._s(_vm.findFloor(status.floor_id).name))
+                      ])
+                    ]
+                  })
+                ],
+                2
+              )
+            ],
+            1
+          )
+        : _vm._e()
     ],
     1
   )
@@ -92641,6 +92719,11 @@ var debug = "development" !== 'production';
     },
     turnOn: function turnOn(context) {
       return axios__WEBPACK_IMPORTED_MODULE_2___default.a.put('/api/elevators/all/turn-on').then(function (data) {});
+    },
+    getStatus: function getStatus(context, id) {
+      return axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/api/elevators/' + id + '/status').then(function (data) {
+        return data.data;
+      });
     },
     fetchFloors: function fetchFloors(context) {
       return axios__WEBPACK_IMPORTED_MODULE_2___default.a.get('/api/floors').then(function (data) {

@@ -36,6 +36,13 @@ export default new Vuex.Store({
             return axios.put('/api/elevators/all/turn-on').then(function (data) {
             });
         },
+
+        getStatus (context, id) {
+            return axios.get('/api/elevators/'+id+'/status').then(function (data) {
+                return data.data;
+            });
+        },
+
         fetchFloors (context) {
             return axios.get('/api/floors').then(function (data) {
                 context.commit('floors', data.data);

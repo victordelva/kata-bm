@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Domain\Elevator;
 use App\Domain\ElevatorRequest;
+use App\Domain\ElevatorStatus;
 use App\Domain\SequenceElevatorRequest;
 use App\Events\TurnOnElevators;
 use App\Repositories\ElevatorRepositoryContract;
@@ -32,17 +33,26 @@ class ElevatorService
         $requests = $this->elevatorRequestRepository->all();
         /** @var ElevatorRequest $request */
         foreach ($requests as $request) {
-            $elevator = $this->getBestElevator($request->getOrigin());
+            $bestElevator = $this->getBestElevator($request->getOrigin());
+            $elevators = $this->elevatorRepository->all();
 
-            $floorsRequest = abs($elevator->current_floor_id - $request->getOrigin());
+            foreach ($elevators as $elevator) {
+                $this->elevatorRepository->saveStatus([
+                    'elevator_id' => $elevator->id,
+                    'floor_id' => $elevator->current_floor_id,
+                    'request_id' => $request->id,
+                ]);
+            }
+
+            $floorsRequest = abs($bestElevator->current_floor_id - $request->getOrigin());
             $floorsDestiny = abs($request->getOrigin() - $request->getDestiny());
 
             $this->elevatorRepository->update([
                 "current_floor_id" => $request->getDestiny(),
-            ], $elevator->id);
+            ], $bestElevator->id);
 
             $this->elevatorRequestRepository->update([
-                "elevator_id" => $elevator->id,
+                "elevator_id" => $bestElevator->id,
                 "floors_on_request" => $floorsRequest,
                 "floors_on_movement" => $floorsDestiny,
             ], $request->id);
@@ -52,5 +62,10 @@ class ElevatorService
     public function getBestElevator($origin)
     {
         return new Elevator($this->elevatorRepository->closest($origin));
+    }
+
+    public function getRequestStatus($id)
+    {
+        return $this->elevatorRequestRepository->getStatus($id);
     }
 }

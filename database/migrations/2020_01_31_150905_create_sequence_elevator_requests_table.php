@@ -22,7 +22,7 @@ class CreateSequenceElevatorRequestsTable extends Migration
             $table->unsignedBigInteger('destination_floor_id');
             $table->timestamps();
 
-            $table->foreign('origin_floor_id')->references('id')->on('floors');
+            $table->foreign('origin_floor_id')->references('id')->on('floors')->onDelete('cascade');
         });
     }
 
