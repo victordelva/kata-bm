@@ -19,6 +19,8 @@ class CreateElevatorRequestsTable extends Migration
             $table->string('to_floor_ids');
             $table->time('time');
             $table->unsignedBigInteger('elevator_id')->nullable();
+            $table->unsignedBigInteger('floors_on_request')->nullable();
+            $table->unsignedBigInteger('floors_on_movement')->nullable();
             $table->timestamps();
         });
     }

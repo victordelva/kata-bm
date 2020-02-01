@@ -15,9 +15,8 @@ class CreateElevatorsTable extends Migration
     {
         Schema::create('elevators', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('current_floor_id')->nullable();
+            $table->unsignedBigInteger('current_floor_id')->default(1)->nullable();
             $table->timestamps();
-            // $table->foreign('current_floor_id')->references('id')->on('floors');
         });
     }
 

@@ -32,15 +32,19 @@ class ElevatorService
         $requests = $this->elevatorRequestRepository->all();
         /** @var ElevatorRequest $request */
         foreach ($requests as $request) {
-//            $request = new ElevatorRequest((array)$request);
             $elevator = $this->getBestElevator($request->getOrigin());
 
+            $floorsRequest = abs($elevator->current_floor_id - $request->getOrigin());
+            $floorsDestiny = abs($request->getOrigin() - $request->getDestiny());
+
             $this->elevatorRepository->update([
-                "current_floor_id" => $request->getDestiny()
+                "current_floor_id" => $request->getDestiny(),
             ], $elevator->id);
 
             $this->elevatorRequestRepository->update([
-                "elevator_id" => $elevator->id
+                "elevator_id" => $elevator->id,
+                "floors_on_request" => $floorsRequest,
+                "floors_on_movement" => $floorsDestiny,
             ], $request->id);
         }
     }

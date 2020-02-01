@@ -1971,6 +1971,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         text: 'Ascensor',
         value: 'elevator_id'
+      }, {
+        text: 'Plantas recorridas en la petición',
+        value: 'floors_on_request'
+      }, {
+        text: 'Plantas recorridas hasta la llegada',
+        value: 'floors_on_movement'
       }],
       chargeActivated: false,
       informActivated: false,
