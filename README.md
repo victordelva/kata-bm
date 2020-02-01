@@ -3,15 +3,15 @@
 ## Reqerimientos
 Debes tener Docker y Docker compose disponible en tu ordenador 
 
-## Como empezar
+## Como empezar ejecuta los siguientes comandos dentro del proyecto
 
->> docker-compose up -d
+> `docker-compose up -d`
 >
->> cp .env.example .env
+> `cp .env.example .env`
 >
->>docker-compose exec app composer install
+> `docker-compose exec app composer install`
 > 
->>docker-compose exec app php artisan migrate --seed
+> `docker-compose exec app php artisan migrate --seed`
 
 Tendrás disponible la aplicación en tu localhost
 
