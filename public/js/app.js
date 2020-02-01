@@ -1963,6 +1963,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])(['requests']), {
@@ -38041,7 +38043,12 @@ var render = function() {
       _c("v-btn", { on: { click: _vm.inform } }, [_vm._v("Generar Informe")]),
       _vm._v(" "),
       _c("v-data-table", {
-        attrs: { headers: _vm.headers, items: _vm.myRequests },
+        attrs: {
+          headers: _vm.headers,
+          items: _vm.myRequests,
+          "sort-by": "time",
+          "sort-asc": ""
+        },
         scopedSlots: _vm._u([
           {
             key: "item.action",
