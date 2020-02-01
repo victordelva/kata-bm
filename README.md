@@ -3,7 +3,7 @@
 ## Reqerimientos
 Debes tener Docker y Docker compose disponible en tu ordenador 
 
-## Como empezar ejecuta los siguientes comandos dentro del proyecto
+## Para empezar ejecuta los siguientes comandos dentro del proyecto
 
 > `docker-compose up -d`
 >
