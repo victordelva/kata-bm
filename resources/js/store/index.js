@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
@@ -8,32 +9,42 @@ const debug = process.env.NODE_ENV !== 'production';
 
 export default new Vuex.Store({
     strict: debug,
+    plugins: [createPersistedState()],
     state: {
-        requests: 0
+        requests: [],
+        floors: [],
     },
     mutations: {
         requests (state, requests) {
-            state.request = requests;
+            state.requests = requests;
+        },
+        floors (state, floors) {
+            state.floors = floors;
         }
     },
     actions: {
-        requests (context) {
-            axios.get('/api/requests').then(function (data) {
-                console.log(data);
-                context.commit('request', data);
+        fetchRequests (context) {
+            return axios.get('/api/requests').then(function (data) {
+                context.commit('requests', data.data);
             });
         },
         transform (context) {
-            axios.put('/api/sequences/all/transform').then(function (data) {
-                console.log(data);
-                context.commit('request', data);
+            return axios.put('/api/sequences/all/transform').then(function (data) {
             });
         },
         turnOn (context) {
-            axios.put('/api/elevators/all/turn-on').then(function (data) {
-                console.log(data);
-                context.commit('request', data);
+            return axios.put('/api/elevators/all/turn-on').then(function (data) {
             });
         },
+        fetchFloors (context) {
+            return axios.get('/api/floors').then(function (data) {
+                context.commit('floors', data.data);
+            });
+        },
+    },
+    getters: {
+        findFloor: (state) => (id) => {
+            return state.floors.find(floor => floor.id == id)
+        }
     }
 })

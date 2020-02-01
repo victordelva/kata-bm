@@ -29,10 +29,10 @@ class ElevatorService
      */
     public function turnOnAll()
     {
-        $requests = $this->elevatorRequestRepository->allOrderedByTime();
+        $requests = $this->elevatorRequestRepository->all();
         /** @var ElevatorRequest $request */
         foreach ($requests as $request) {
-            $request = new ElevatorRequest((array)$request);
+//            $request = new ElevatorRequest((array)$request);
             $elevator = $this->getBestElevator($request->getOrigin());
 
             $this->elevatorRepository->update([

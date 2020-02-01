@@ -15,7 +15,7 @@ class ElevatorRequestRepository implements ElevatorRequestRepositoryContract
 
     public function all()
     {
-        return ElevatorRequest::all();
+        return ElevatorRequest::all()->sortBy("time");
     }
 
     public function allOrderedByTime()

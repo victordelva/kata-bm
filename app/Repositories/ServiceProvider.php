@@ -24,5 +24,10 @@ class ServiceProvider extends BaseServiceProvider
             ElevatorRepositoryContract::class,
             ElevatorRepository::class
         );
+
+        $this->app->bind(
+            FloorsRepositoryContract::class,
+            FloorsRepository::class
+        );
     }
 }
