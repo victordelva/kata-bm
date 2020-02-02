@@ -13,7 +13,8 @@ Debes tener Docker y Docker compose disponible en tu ordenador
 > 
 > `docker-compose exec app php artisan migrate --seed`
 
-Tendrás disponible la aplicación en tu localhost
+Tendrás disponible la aplicación en tu localhost: 
+http://localhost
 
 ## Execute tests
 
