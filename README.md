@@ -1,6 +1,6 @@
 # Victor del Valle
 
-## Reqerimientos
+## Requerimientos
 Debes tener Docker y Docker compose disponible en tu ordenador 
 
 ## Para empezar ejecuta los siguientes comandos dentro del proyecto
